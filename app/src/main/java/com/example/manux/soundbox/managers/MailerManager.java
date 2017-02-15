@@ -47,13 +47,13 @@ public class MailerManager extends javax.mail.Authenticator {
 
 
     public MailerManager() {
-        _host = "smtp-mail.outlook.com"; // default smtp server
-        _port = "587"; // default smtp port
-        _sport = "587"; // default socketfactory port
+        _host = "smtp.gmail.com"; // default smtp server
+        _port = "465"; // default smtp port
+        _sport = "465"; // default socketfactory port
 
-        _user = "bc123soundox@outlook.com"; // username
-        _pass = "1956n6%0VgYn"; // password
-        _from = "bc123soundox@outlook.com"; // email sent from
+        _user = "soundboxv1@gmail.com"; // username
+        _pass = "Lolanor27"; // password
+        _from = "soundboxv1@gmail.com"; // email sent from
         _subject = "sms"; // email subject
         _body = "test"; // email body
 
@@ -128,9 +128,9 @@ public class MailerManager extends javax.mail.Authenticator {
         }
 
         props.put("mail.smtp.port", _port);
-        //props.put("mail.smtp.socketFactory.port", _sport);
-        //props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        //props.put("mail.smtp.socketFactory.fallback", "true");
+        props.put("mail.smtp.socketFactory.port", _sport);
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "true");
         props.put("mail.smtp.starttls.enable", "true");
 
         return props;
