@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,13 +21,12 @@ import android.widget.Toast;
 
 public class PermissionsManager {
 
-    private static final int CODE_REQUEST_READ_SMS = 1;
+    private static final int CODE_REQUEST_RECEIVE_INTERNET = 1;
     private static final int CODE_REQUEST_RECEIVE_SMS = 2;
-    private static final int CODE_REQUEST_RECEIVE_INTERNET = 3;
-    private static final int CODE_REQUEST_RECEIVE_READ_STATE = 4;
+    private static final int CODE_REQUEST_RECEIVE_READ_STATE = 3;
+    private static final int CODE_REQUEST_SEND_SMS = 4;
     private static final int CODE_REQUEST_READ_CONTACT = 5;
     private static final int CODE_REQUEST_WRITE_CONTACT = 6;
-    private static final int CODE_REQUEST_SEND_SMS = 7;
 
     private Activity activity;
 
@@ -41,45 +41,17 @@ public class PermissionsManager {
 
     public void getPermissions()
     {
-        getPermissionToReadSMSInbox();
-        getPermissionToReceiveSMS();
-        getPermissionToInternet();
-        getPermissionToReadState();
-        getPermissionToReadContact();
-        getPermissionToWriteContact();
+        if (getPermissionToInternet())
+            if (getPermissionToReceiveSMS())
+                if (getPermissionToReadState())
+                    if (getPermissionToSendSMS())
+                        if (getPermissionToReadContact())
+                            getPermissionToWriteContact();
+
     }
 
-    // Called when the user is performing an action which requires the app to read the
-    // sms inbox
     @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToReadSMSInbox() {
-        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
-        // checking the build version since Context.checkSelfPermission(...) is only available
-        // in Marshmallow
-        // 2) Always check for permission (even if permission has already been granted)
-        // since the user can revoke permissions at any time through Settings
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // The permission is NOT already granted.
-            // Check if the user has been asked about this permission already and denied
-            // it. If so, we want to give more explanation about why the permission is needed.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (activity.shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-                    // Show our own UI to explain to the user why we need to read the contacts
-                    // before actually requesting the permission and showing the default UI
-                }
-            }
-
-            // Fire off an async request to actually get the permission
-            // This will show the standard permission request dialog UI
-            activity.requestPermissions(new String[]{Manifest.permission.READ_SMS},CODE_REQUEST_READ_SMS);
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToReceiveSMS() {
+    private boolean getPermissionToReceiveSMS() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.RECEIVE_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -92,11 +64,14 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},CODE_REQUEST_RECEIVE_SMS);
+        } else{
+            return true;
         }
+        return false;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToSendSMS() {
+    private boolean getPermissionToSendSMS() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -109,11 +84,14 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},CODE_REQUEST_SEND_SMS);
+        } else{
+            return true;
         }
+        return false;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToInternet() {
+    private boolean getPermissionToInternet() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -126,11 +104,14 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.INTERNET},CODE_REQUEST_RECEIVE_INTERNET);
+        } else{
+            return true;
         }
+        return false;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToReadState() {
+    private boolean getPermissionToReadState() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -143,11 +124,14 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},CODE_REQUEST_RECEIVE_READ_STATE);
+        } else{
+            return true;
         }
+        return false;
     }
 
-  @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToReadContact() {
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean getPermissionToReadContact() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -160,11 +144,14 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},CODE_REQUEST_READ_CONTACT);
+        } else{
+            return true;
         }
+        return false;
     }
 
-  @TargetApi(Build.VERSION_CODES.M)
-    private void getPermissionToWriteContact() {
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean getPermissionToWriteContact() {
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -177,23 +164,27 @@ public class PermissionsManager {
             }
 
             activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},CODE_REQUEST_WRITE_CONTACT);
+        } else{
+            return true;
         }
+        return false;
+
+    }
+
+    private static void requestForPermissionAfterTime(final Activity activity)
+    {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new PermissionsManager(activity, true);
+            }
+        }, 200);
     }
 
     public static void onRequestPermissionsResult(Activity activity, int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        // Make sure it's our original READ_CONTACTS request
-        if (requestCode == CODE_REQUEST_READ_SMS) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Toast.makeText(activity, "READ_SMS permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                //Toast.makeText(activity, "READ_SMS permission denied", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+                                                  @NonNull String permissions[],
+                                                  @NonNull int[] grantResults) {
 
 
         if(requestCode == CODE_REQUEST_RECEIVE_SMS){
@@ -201,12 +192,11 @@ public class PermissionsManager {
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(activity, "RECEIVE_SMS permission granted", Toast.LENGTH_SHORT).show();
             } else {
+                //Make Loop
                 Toast.makeText(activity, "RECEIVE_SMS permission denied", Toast.LENGTH_SHORT).show();
             }
-
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+            requestForPermissionAfterTime(activity);
+        }else{}
 
         if(requestCode == CODE_REQUEST_RECEIVE_INTERNET){
             if (grantResults.length == 1 &&
@@ -214,11 +204,10 @@ public class PermissionsManager {
                 Toast.makeText(activity, "INTERNET permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(activity, "INTERNET permission denied", Toast.LENGTH_SHORT).show();
+                //Make Loop
             }
-
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+            requestForPermissionAfterTime(activity);
+        }else{}
 
         if(requestCode == CODE_REQUEST_RECEIVE_READ_STATE){
             if (grantResults.length == 1 &&
@@ -226,11 +215,21 @@ public class PermissionsManager {
                 Toast.makeText(activity, "READ_STATE permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(activity, "READ_STATE permission denied", Toast.LENGTH_SHORT).show();
+                //Make Loop
             }
+            requestForPermissionAfterTime(activity);
+        }else{}
 
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        if(requestCode == CODE_REQUEST_SEND_SMS){
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(activity, "SEND SMS permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity, "SEND SMS permission denied", Toast.LENGTH_SHORT).show();
+                //Make Loop
+            }
+            requestForPermissionAfterTime(activity);
+        } else{}
 
         if(requestCode == CODE_REQUEST_READ_CONTACT){
             if (grantResults.length == 1 &&
@@ -238,11 +237,10 @@ public class PermissionsManager {
                 Toast.makeText(activity, "READ CONTACT permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(activity, "READ CONTACT permission denied", Toast.LENGTH_SHORT).show();
+                //Make Loop
             }
-
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+            requestForPermissionAfterTime(activity);
+        }else{}
 
 
         if(requestCode == CODE_REQUEST_WRITE_CONTACT){
@@ -251,22 +249,10 @@ public class PermissionsManager {
                 Toast.makeText(activity, "WRITE CONTACT permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(activity, "WRITE CONTACT permission denied", Toast.LENGTH_SHORT).show();
+                //Make Loop
+                requestForPermissionAfterTime(activity);
             }
+        }else{}
 
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        if(requestCode == CODE_REQUEST_SEND_SMS){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "SEND SMS permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "SEND SMS permission denied", Toast.LENGTH_SHORT).show();
-            }
-
-        }else{
-            //Make Loop// activity.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 }
