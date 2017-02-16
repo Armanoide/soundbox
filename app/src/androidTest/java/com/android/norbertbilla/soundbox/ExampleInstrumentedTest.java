@@ -1,4 +1,4 @@
-package com.example.manux.soundbox;
+package com.android.norbertbilla.soundbox;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.manux.soundbox", appContext.getPackageName());
+        assertEquals("com.android.norbertbilla.soundbox", appContext.getPackageName());
     }
 }

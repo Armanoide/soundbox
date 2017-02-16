@@ -1,4 +1,4 @@
-package com.example.manux.soundbox.activities;
+package com.android.norbertbilla.soundbox.activities;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -16,10 +16,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.manux.soundbox.R;
-import com.example.manux.soundbox.async.SlackTokenAsync;
-import com.example.manux.soundbox.managers.PermissionsManager;
-import com.example.manux.soundbox.managers.SlackManager;
+import com.android.norbertbilla.soundbox.R;
+import com.android.norbertbilla.soundbox.async.SlackTokenAsync;
+import com.android.norbertbilla.soundbox.managers.PermissionsManager;
+import com.android.norbertbilla.soundbox.managers.SlackManager;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.manux.soundbox.managers;
+package com.android.norbertbilla.soundbox.managers;
 
 import android.Manifest;
 import android.annotation.TargetApi;

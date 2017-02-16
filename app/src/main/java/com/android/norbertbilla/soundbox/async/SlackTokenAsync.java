@@ -1,4 +1,4 @@
-package com.example.manux.soundbox.async;
+package com.android.norbertbilla.soundbox.async;
 
 import android.os.AsyncTask;
 import android.util.Log;

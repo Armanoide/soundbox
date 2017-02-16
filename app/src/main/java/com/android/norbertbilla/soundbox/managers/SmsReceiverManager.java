@@ -1,4 +1,4 @@
-package com.example.manux.soundbox.managers;
+package com.android.norbertbilla.soundbox.managers;
 
 
 import android.Manifest;
@@ -14,8 +14,6 @@ import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
-
-import com.example.manux.soundbox.async.MailSendReceiveSMSAsync;
 
 /**
  * Created by norbert on 15/02/2017.

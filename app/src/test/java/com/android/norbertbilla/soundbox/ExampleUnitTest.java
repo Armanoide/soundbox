@@ -1,4 +1,4 @@
-package com.example.manux.soundbox;
+package com.android.norbertbilla.soundbox;
 
 import org.junit.Test;
 
