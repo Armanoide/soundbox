@@ -1,12 +1,14 @@
 package com.example.manux.soundbox.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -204,24 +206,55 @@ public class MainActivity extends AppCompatActivity {
         if (telNumber == null) {
             telNumber = (AutoCompleteTextView) findViewById(R.id.textview_tel);
         }
-        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-        smsIntent.setData(Uri.parse("smsto:"));
-        smsIntent.setType("vnd.android-dir/mms-sms");
 
-        smsIntent.setData(Uri.parse("smsto:"));
-        smsIntent.setType("vnd.android-dir/mms-sms");
-        smsIntent.putExtra("address"  , telNumber.getText());
-        smsIntent.putExtra("sms_body"  , "music");
-        Toast.makeText(this, "MMS Envoyé", Toast.LENGTH_SHORT).show();
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setCancelable(false);
+        dialog.setTitle("Vous êtes prenium ?");
+        dialog.setMessage("L'envoie de sms est réserver au membre Prenium" );
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.show();
+
+        {
+            /*
+            Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+            smsIntent.setData(Uri.parse("smsto:"));
+            smsIntent.setType("vnd.android-dir/mms-sms");
+
+            smsIntent.setData(Uri.parse("smsto:"));
+            smsIntent.setType("vnd.android-dir/mms-sms");
+            smsIntent.putExtra("address"  , telNumber.getText());
+            smsIntent.putExtra("sms_body"  , "music");
+            Toast.makeText(this, "MMS Envoyé", Toast.LENGTH_SHORT).show();
+             */
+        }
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPlayer = null;
+    }
 
     @Override
     public void onPause(){
         super.onPause();
-        if(mPlayer != null){
-            mPlayer.stop();
-            mPlayer.release();
+        try {
+
+            if(mPlayer != null){
+                mPlayer.stop();
+                mPlayer.release();
+                mPlayer = null;
+            }
+        } catch (IllegalStateException e) {
+
         }
     }
 
@@ -231,8 +264,9 @@ public class MainActivity extends AppCompatActivity {
             selectedSong = resId;
             mPlayer.stop();
             mPlayer.release();
+            mPlayer = null;
         }
-        mPlayer = MediaPlayer.create(this, resId);
+        mPlayer = MediaPlayer.create(MainActivity.this, resId);
         mPlayer.start();
     }
 

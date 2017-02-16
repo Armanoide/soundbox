@@ -15,19 +15,19 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by norbert on 15/02/2017.
  */
 
 public class PermissionsManager {
 
-    private static final int CODE_REQUEST_RECEIVE_INTERNET = 1;
-    private static final int CODE_REQUEST_RECEIVE_SMS = 2;
-    private static final int CODE_REQUEST_RECEIVE_READ_STATE = 3;
-    private static final int CODE_REQUEST_SEND_SMS = 4;
-    private static final int CODE_REQUEST_READ_CONTACT = 5;
+    private static final int CODE_REQUEST_ALL_PERMISSION = 1;
 
     private Activity activity;
+    private List<String> permissions = new ArrayList<>();
 
     public PermissionsManager(Activity activity, boolean ask)
     {
@@ -40,12 +40,13 @@ public class PermissionsManager {
 
     public void getPermissions()
     {
-        if (getPermissionToInternet())
-            if (getPermissionToReceiveSMS())
-                if (getPermissionToReadState())
-                    if (getPermissionToSendSMS())
-                        getPermissionToReadContact();
-
+        getPermissionToInternet();
+        getPermissionToReceiveSMS();
+        getPermissionToReadState();
+        getPermissionToSendSMS();
+        getPermissionToReadContact();
+        if (!permissions.isEmpty())
+            activity.requestPermissions(permissions.toArray(new String [0]), CODE_REQUEST_ALL_PERMISSION);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -60,8 +61,7 @@ public class PermissionsManager {
                     // before actually requesting the permission and showing the default UI
                 }
             }
-
-            activity.requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},CODE_REQUEST_RECEIVE_SMS);
+            permissions.add(Manifest.permission.RECEIVE_SMS);
         } else{
             return true;
         }
@@ -83,7 +83,7 @@ public class PermissionsManager {
                 }
             }
 
-            activity.requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS},CODE_REQUEST_SEND_SMS);
+            permissions.add(Manifest.permission.RECEIVE_SMS);
         } else{
             return true;
         }
@@ -102,8 +102,7 @@ public class PermissionsManager {
                     // before actually requesting the permission and showing the default UI
                 }
             }
-
-            activity.requestPermissions(new String[]{Manifest.permission.INTERNET},CODE_REQUEST_RECEIVE_INTERNET);
+            permissions.add(Manifest.permission.INTERNET);
         } else{
             return true;
         }
@@ -123,7 +122,7 @@ public class PermissionsManager {
                 }
             }
 
-            activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},CODE_REQUEST_RECEIVE_READ_STATE);
+            permissions.add(Manifest.permission.READ_PHONE_STATE);
         } else{
             return true;
         }
@@ -143,7 +142,7 @@ public class PermissionsManager {
                 }
             }
 
-            activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},CODE_REQUEST_READ_CONTACT);
+            permissions.add(Manifest.permission.READ_CONTACTS);
         } else{
             return true;
         }
@@ -165,59 +164,14 @@ public class PermissionsManager {
                                                   @NonNull String permissions[],
                                                   @NonNull int[] grantResults) {
 
-
-        if(requestCode == CODE_REQUEST_RECEIVE_SMS){
+        if(requestCode == CODE_REQUEST_ALL_PERMISSION){
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "RECEIVE_SMS permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 //Make Loop
                 Toast.makeText(activity, "RECEIVE_SMS permission denied", Toast.LENGTH_SHORT).show();
-            }
-            requestForPermissionAfterTime(activity);
-        }else{}
-
-        if(requestCode == CODE_REQUEST_RECEIVE_INTERNET){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "INTERNET permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "INTERNET permission denied", Toast.LENGTH_SHORT).show();
-                //Make Loop
-            }
-            requestForPermissionAfterTime(activity);
-        }else{}
-
-        if(requestCode == CODE_REQUEST_RECEIVE_READ_STATE){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "READ_STATE permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "READ_STATE permission denied", Toast.LENGTH_SHORT).show();
-                //Make Loop
-            }
-            requestForPermissionAfterTime(activity);
-        }else{}
-
-        if(requestCode == CODE_REQUEST_SEND_SMS){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "SEND SMS permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "SEND SMS permission denied", Toast.LENGTH_SHORT).show();
-                //Make Loop
-            }
-            requestForPermissionAfterTime(activity);
-        } else{}
-
-        if(requestCode == CODE_REQUEST_READ_CONTACT){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "READ CONTACT permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "READ CONTACT permission denied", Toast.LENGTH_SHORT).show();
                 requestForPermissionAfterTime(activity);
-                //Make Loop
             }
         }else{}
 

@@ -57,13 +57,7 @@ public class SmsReceiverManager extends  BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO Auto-generated method stub
-        if (intent.getAction().equals("android.provider.Telephony.SEND_RESPOND_VIA_MESSAGE")){
-            Bundle bundle = intent.getExtras();
-            if (bundle != null){
-                Object[] pdus = (Object[]) bundle.get("pdus");
-                SmsMessage[] messages = new SmsMessage[pdus.length];
-            }
-        }
+
         if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
             Bundle bundle = intent.getExtras();
             if (bundle != null){
