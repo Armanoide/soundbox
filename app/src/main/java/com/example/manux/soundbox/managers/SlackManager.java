@@ -14,6 +14,7 @@ import allbegray.slack.rtm.EventListener;
 import allbegray.slack.rtm.SlackRealTimeMessagingClient;
 import allbegray.slack.type.Authentication;
 import allbegray.slack.type.Channel;
+import allbegray.slack.type.OAuthAccessToken;
 import allbegray.slack.type.User;
 import allbegray.slack.webapi.SlackWebApiClient;
 import allbegray.slack.webapi.method.chats.ChatMeMessageMethod;
@@ -35,12 +36,14 @@ public class SlackManager extends AsyncTask<Void, Void, Void> {
         if (mWebApiClient == null) {
             mWebApiClient = SlackClientFactory.createWebApiClient(slackToken);
             String webSocketUrl = mWebApiClient.startRealTimeMessagingApi().findPath("url").asText();
+
+            //OAuthAccessToken token = mWebApiClient.accessOAuth("142059101747.141427169680", "9785c4d7b8f8933f9382726a8191fd24", "http//:sandbox.com", "");
             mRtmClient = new SlackRealTimeMessagingClient(webSocketUrl);
             mRtmClient.connect();
             mRtmClient.addListener(Event.HELLO, new EventListener() {
                 @Override
                 public void onMessage(JsonNode jsonNode) {
-                    Channel channel = mWebApiClient.joinChannel("general");
+                    Channel channel = mWebApiClient.joinChannel("suprise");
                     if (channel != null && message != null) {
                         mWebApiClient.postMessage(channel.getId(), message);
                         mRtmClient.close();
