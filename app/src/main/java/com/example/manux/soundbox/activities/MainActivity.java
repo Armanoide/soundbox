@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.manux.soundbox.R;
+import com.example.manux.soundbox.async.SlackTokenAsync;
 import com.example.manux.soundbox.managers.PermissionsManager;
+import com.example.manux.soundbox.managers.SlackManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         permissionsManager = new PermissionsManager(MainActivity.this, true);
-
 
 /////////////////////////
         Button Yeay = (Button) findViewById(R.id.Yeay);                                             //yeay

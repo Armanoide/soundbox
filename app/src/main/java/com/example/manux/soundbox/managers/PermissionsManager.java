@@ -26,7 +26,6 @@ public class PermissionsManager {
     private static final int CODE_REQUEST_RECEIVE_READ_STATE = 3;
     private static final int CODE_REQUEST_SEND_SMS = 4;
     private static final int CODE_REQUEST_READ_CONTACT = 5;
-    private static final int CODE_REQUEST_WRITE_CONTACT = 6;
 
     private Activity activity;
 
@@ -45,8 +44,7 @@ public class PermissionsManager {
             if (getPermissionToReceiveSMS())
                 if (getPermissionToReadState())
                     if (getPermissionToSendSMS())
-                        if (getPermissionToReadContact())
-                            getPermissionToWriteContact();
+                        getPermissionToReadContact();
 
     }
 
@@ -69,6 +67,8 @@ public class PermissionsManager {
         }
         return false;
     }
+
+
 
     @TargetApi(Build.VERSION_CODES.M)
     private boolean getPermissionToSendSMS() {
@@ -150,27 +150,6 @@ public class PermissionsManager {
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private boolean getPermissionToWriteContact() {
-
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_CONTACTS)) {
-                    // Show our own UI to explain to the user why we need to read the contacts
-                    // before actually requesting the permission and showing the default UI
-                }
-            }
-
-            activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},CODE_REQUEST_WRITE_CONTACT);
-        } else{
-            return true;
-        }
-        return false;
-
-    }
-
     private static void requestForPermissionAfterTime(final Activity activity)
     {
         final Handler handler = new Handler();
@@ -237,20 +216,8 @@ public class PermissionsManager {
                 Toast.makeText(activity, "READ CONTACT permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(activity, "READ CONTACT permission denied", Toast.LENGTH_SHORT).show();
-                //Make Loop
-            }
-            requestForPermissionAfterTime(activity);
-        }else{}
-
-
-        if(requestCode == CODE_REQUEST_WRITE_CONTACT){
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity, "WRITE CONTACT permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, "WRITE CONTACT permission denied", Toast.LENGTH_SHORT).show();
-                //Make Loop
                 requestForPermissionAfterTime(activity);
+                //Make Loop
             }
         }else{}
 

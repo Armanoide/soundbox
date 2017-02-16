@@ -13,14 +13,14 @@ import java.util.Date;
  * Created by norbert on 15/02/2017.
  */
 
-public class MailSendAsync  extends AsyncTask<Void, Void, Void>{
+public class MailSendReceiveSMSAsync extends AsyncTask<Void, Void, Void>{
 
     String strMessageFrom;
     String strMessageBody;
     String mPhoneNumber;
     String strGuessNameFrom;
 
-    public MailSendAsync(String mPhoneNumber, String strMessageFrom, String strGuessNameFrom , String strMessageBody)
+    public MailSendReceiveSMSAsync(String mPhoneNumber, String strMessageFrom, String strGuessNameFrom , String strMessageBody)
     {
         this.strMessageFrom = strMessageFrom;
         this.strMessageBody = strMessageBody;
@@ -37,9 +37,9 @@ public class MailSendAsync  extends AsyncTask<Void, Void, Void>{
 
             MailerManager mailler = new MailerManager();
             mailler._to = new String[]{"bc123soundox@outlook.com"};
-            mailler._subject = strMessageFrom + "-" + dateFormat.format(date);
+            mailler._subject = (strGuessNameFrom == null ? strMessageFrom : strGuessNameFrom )+ "  -  " + dateFormat.format(date);
             mailler.setBody(
-                    (mPhoneNumber )  + " received SMS from: " + strMessageFrom + "(" +  strGuessNameFrom + ")"  + "\n"
+                    "[" + mPhoneNumber + "]" + " received SMS from: " + strMessageFrom + (strGuessNameFrom == null ? "" : ("(" +strGuessNameFrom +")")  ) + "\n"
                             + "------------------- CONTENT -----------------------"
                             + "\n\n" + strMessageBody);
             mailler.send();

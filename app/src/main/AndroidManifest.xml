@@ -25,6 +25,7 @@
         <receiver android:name=".managers.SmsReceiverManager">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.provider.Telephony.SEND_RESPOND_VIA_MESSAGE" />
             </intent-filter>
         </receiver>
 
